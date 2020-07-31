@@ -8,15 +8,17 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/null-char/go-first/handlers"
+	"github.com/null-char/go-coffee/handlers"
 )
 
 func main() {
 	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
 	hh := handlers.NewHello(logger)
+	pHandler := handlers.NewProducts(logger)
 	// Create a custom ServeMux for handling requests
 	serveMux := http.NewServeMux()
 	serveMux.Handle("/", hh)
+	serveMux.Handle("/products", pHandler)
 
 	server := &http.Server{
 		Addr:         "127.0.0.1:9090",

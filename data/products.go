@@ -2,13 +2,14 @@ package data
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"time"
 )
 
 // Product defines the structure of a product in our API.
 type Product struct {
-	ID          uint    `json:"id"`
+	ID          int     `json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Price       float32 `json:"price"`

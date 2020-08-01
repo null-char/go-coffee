@@ -19,6 +19,12 @@ type Product struct {
 	DeletedOn   string  `json:"-"`
 }
 
+// FromJSON initializes a product struct decoded from JSON. Returns an error if not successful.
+func (p *Product) FromJSON(body io.ReadCloser) error {
+	decoder := json.NewDecoder(body)
+	return decoder.Decode(p)
+}
+
 // ProductsList is a type that is a slice of pointers to Product struct.
 type ProductsList []*Product
 

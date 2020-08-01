@@ -42,6 +42,36 @@ func GetProducts() ProductsList {
 	return productsList
 }
 
+// AddProduct adds a new product to the products slice
+func AddProduct(newProduct Product) {
+	productsList = append(productsList, &newProduct)
+}
+
+// UpdateProduct receives an id and the newData struct and replaces the required product with
+// the newly provided data.
+func UpdateProduct(id int, newData Product) (*Product, error) {
+	prodToUpdate, err := FindProduct(id)
+	if err != nil {
+		return nil, err
+	}
+
+	*prodToUpdate = newData
+	return prodToUpdate, nil
+}
+
+// FindProduct finds and returns the product with the given id.
+func FindProduct(id int) (*Product, error) {
+	for _, prod := range productsList {
+		if prod.ID == id {
+			return prod, nil
+		}
+	}
+
+	// Error out if we couldn't find a product with the specified id
+	err := fmt.Errorf("product with id %v not found", id)
+	return nil, err
+}
+
 var productsList = ProductsList{
 	{
 		ID:          1,

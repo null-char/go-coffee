@@ -39,8 +39,7 @@ func main() {
 
 func setupCloseHandler(server *http.Server, logger *log.Logger) {
 	sc := make(chan os.Signal)
-	signal.Notify(sc, os.Interrupt)
-	signal.Notify(sc, os.Kill)
+	signal.Notify(sc, os.Interrupt, os.Kill)
 
 	// Block for a signal.
 	<-sc

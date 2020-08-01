@@ -54,7 +54,7 @@ var productsList = ProductsList{
 	},
 	{
 		ID:          2,
-		Name:        "Latte",
+		Name:        "Espresso",
 		Description: "Short and strong coffee without milk",
 		Price:       1.99,
 		SKU:         "ab3cr",

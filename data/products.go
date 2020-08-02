@@ -56,28 +56,52 @@ func nextID() int {
 }
 
 // UpdateProduct receives an id and the newData struct and replaces the required product with
-// the newly provided data.
-func UpdateProduct(id int, newData Product) (*Product, error) {
-	prodToUpdate, err := FindProduct(id)
+// the newly provided data. It will either return a pointer to a Product struct or a null pointer
+// if no product could be found.
+func UpdateProduct(id int, newData Product) *Product {
+	prodToUpdate, _, err := FindProduct(id)
 	if err != nil {
-		return nil, err
+		return nil
 	}
 
+	// Grab the value of CreatedOn before we replace
+	createdOn := prodToUpdate.CreatedOn
+
 	*prodToUpdate = newData
-	return prodToUpdate, nil
+	prodToUpdate.ID = id
+	prodToUpdate.CreatedOn = createdOn
+	prodToUpdate.UpdatedOn = time.Now().UTC().String()
+
+	return prodToUpdate
 }
 
-// FindProduct finds and returns the product with the given id.
-func FindProduct(id int) (*Product, error) {
-	for _, prod := range productsList {
+// DeleteProduct takes an id and deletes the product with that id if found. If the product
+// does not exist, it'll return an error.
+func DeleteProduct(id int) error {
+	_, i, err := FindProduct(id)
+	if err != nil {
+		return err
+	}
+
+	productsList = removeIndex(productsList, i)
+	return nil
+}
+
+func removeIndex(slice ProductsList, i int) ProductsList {
+	return append(slice[0:i], slice[i+1:]...)
+}
+
+// FindProduct finds and returns the product with the given id including its index in the slice.
+func FindProduct(id int) (*Product, int, error) {
+	for i, prod := range productsList {
 		if prod.ID == id {
-			return prod, nil
+			return prod, i, nil
 		}
 	}
 
 	// Error out if we couldn't find a product with the specified id
 	err := fmt.Errorf("product with id %v not found", id)
-	return nil, err
+	return nil, -1, err
 }
 
 var productsList = ProductsList{

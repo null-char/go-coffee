@@ -8,32 +8,35 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/null-char/go-coffee/handlers"
+	"github.com/gin-gonic/gin"
+	"github.com/null-char/go-coffee/products"
 )
 
+const LOCAL = "127.0.0.1:9090"
+
 func main() {
-	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
-	hh := handlers.NewHello(logger)
-	pHandler := handlers.NewProducts(logger)
-	// Create a custom ServeMux for handling requests
-	serveMux := http.NewServeMux()
-	serveMux.Handle("/", hh)
-	serveMux.Handle("/products", pHandler)
+	logger := log.New(os.Stdout, "[GLOBAL] ", log.LstdFlags)
+	r := gin.Default()
+
+	products.RegisterRoutes(r.Group("/products"))
 
 	server := &http.Server{
-		Addr:         "127.0.0.1:9090",
-		Handler:      serveMux,
+		Addr:         LOCAL,
+		Handler:      r,
 		IdleTimeout:  120 * time.Second,
 		WriteTimeout: 1 * time.Second,
 		ReadTimeout:  1 * time.Second,
 	}
 
+	// Deal with listening in on incoming connections in a different goroutine
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
 			logger.Fatal(err)
 		}
 	}()
 
+	// This function will essentially block the main goroutine and wait until we receive either
+	// a SIGINT or SIGKILL and gracefully shutdown the server if so.
 	setupCloseHandler(server, logger)
 }
 

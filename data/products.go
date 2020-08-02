@@ -10,10 +10,10 @@ import (
 // Product defines the structure of a product in our API.
 type Product struct {
 	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Price       float32 `json:"price"`
-	SKU         string  `json:""`
+	Name        string  `json:"name" binding:"required,min=5"`
+	Description string  `json:"description" binding:"required,min=15" `
+	Price       float32 `json:"price" binding:"required,gt=0"`
+	SKU         string  `json:"sku" binding:"required,len=5"`
 	CreatedOn   string  `json:"-"`
 	UpdatedOn   string  `json:"-"`
 	DeletedOn   string  `json:"-"`

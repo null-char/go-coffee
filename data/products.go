@@ -43,8 +43,16 @@ func GetProducts() ProductsList {
 }
 
 // AddProduct adds a new product to the products slice
-func AddProduct(newProduct Product) {
-	productsList = append(productsList, &newProduct)
+func AddProduct(newProduct *Product) {
+	newProduct.ID = nextID()
+	newProduct.CreatedOn = time.Now().UTC().String()
+	productsList = append(productsList, newProduct)
+}
+
+// Totally how DBs work
+func nextID() int {
+	lp := productsList[len(productsList)-1]
+	return lp.ID + 1
 }
 
 // UpdateProduct receives an id and the newData struct and replaces the required product with

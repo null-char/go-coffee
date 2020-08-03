@@ -51,6 +51,10 @@ func AddProduct(newProduct *Product) {
 
 // Totally how DBs work
 func nextID() int {
+	if len(productsList) == 0 {
+		return 0
+	}
+
 	lp := productsList[len(productsList)-1]
 	return lp.ID + 1
 }
